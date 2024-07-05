@@ -1,0 +1,154 @@
+http.contentType=application/json
+http.accept=application/json
+
+#createPlan Service
+plan.apiGateway.url=http://localhost:5555/rest/apigateway/plans/
+plan.apiGateway.http.method=post
+plan.apiGateway.http.auth.type=Basic
+plan.apiGateway.http.auth.userName=Administrator
+plan.apiGateway.http.auth.password=[[encrypted:plan.apiGateway.http.auth.password]]
+plan.apiGateway.http.status=Success
+
+#createQuotaPolicyAction Service
+quotaPolicyAction.breach.throttle.template={"policyAction":{"templateKey":"throttle","names":[{"value":"Throttling Traffic Optimization","locale":"en"}],"parameters":[{"templateKey":"throttleRule","parameters":[{"templateKey":"throttleRuleName","values":["requestCount"]},{"templateKey":"monitorRuleOperator","values":["GT"]},{"templateKey":"value","values":["%value subscriptionRequest/plan/quota/quotaValue%"]}]},{"templateKey":"destination","parameters":[{"templateKey":"destinationType","values":["GATEWAY"]}]},{"templateKey":"alertInterval","values":["%value subscriptionRequest/plan/quota/interval%"]},{"templateKey":"alertIntervalUnit","values":["%value subscriptionRequest/plan/quota/intervalUnit%"]},{"templateKey":"alertFrequency","values":["always"]},{"templateKey":"alertMessage","values":["%value subscriptionRequest/plan/quota/violationMessage%"]},{"templateKey":"consumerIds","values":["AnyConsumers"]}]}}
+quotaPolicyAction.notification.monitor.template={"policyAction":{"templateKey":"monitorSLA","names":[{"value":"Monitor Service Level Agreement","locale":"en"}],"parameters":[{"templateKey":"monitorRules","parameters":[{"templateKey":"monitorRuleName","values":["requestCount"]},{"templateKey":"monitorRuleOperator","values":["GT"]},{"templateKey":"value","values":["%value quotaPercentValue%"],"extendedProperties":[{"key":"quota","value":"%value subscriptionRequest/plan/quota/quotaValue%"},{"key":"notifyPercent","value":"%value subscriptionRequest/plan/quota/notificationSetting/notificationPercentage%"}]}]},{"templateKey":"destination","parameters":[{"templateKey":"destinationType","values":["GATEWAY"]}]},{"templateKey":"alertInterval","values":["%value subscriptionRequest/plan/quota/interval%"]},{"templateKey":"alertIntervalUnit","values":["hours"]},{"templateKey":"alertFrequency","values":["always"]},{"templateKey":"alertMessage","values":["%value subscriptionRequest/plan/quota/notificationSetting/notificationMessage%"]},{"templateKey":"consumerIds","values":["AnyConsumers"]},{"templateKey":"destination","parameters":[{"templateKey":"destinationType","values":["SMTP"]},{"templateKey":"emailTo","values":["%value emailIds%"]}]},{"templateKey":"destination","parameters":[{"templateKey":"destinationType","values":["DES"]}]}]}}
+#createRatePolicyAction Service
+ratePolicyAction.throttle.template={"policyAction":{"templateKey":"throttle","names":[{"value":"Throttling Traffic Optimization","locale":"en"}],"parameters":[{"templateKey":"throttleRule","parameters":[{"templateKey":"throttleRuleName","values":["requestCount"]},{"templateKey":"monitorRuleOperator","values":["GT"]},{"templateKey":"value","values":["%value subscriptionRequest/plan/rate/rateValue%"]}]},{"templateKey":"destination","parameters":[{"templateKey":"destinationType","values":["GATEWAY"]}]},{"templateKey":"alertInterval","values":["%value subscriptionRequest/plan/rate/interval%"]},{"templateKey":"alertIntervalUnit","values":["%value subscriptionRequest/plan/rate/intervalUnit%"]},{"templateKey":"alertFrequency","values":["always"]},{"templateKey":"alertMessage","values":["%value subscriptionRequest/plan/rate/violationMessage%"]},{"templateKey":"consumerIds","values":["AnyConsumers"]}]}}
+
+#createPolicyAction Service
+policyAction.url=http://localhost:5555/rest/apigateway/policyActions/
+policyAction.http.method=post
+policyAction.http.auth.type=Basic
+policyAction.http.auth.userName=Administrator
+policyAction.http.auth.password=[[encrypted:policyAction.http.auth.password]]
+policyAction.http.status=Success
+
+#createQuotaPolicy Service
+createPolicy.monitor.throttle.template={"policy":{"id":"%value createPlanResponse/planResponse/quota/enforcementPolicy%","policyEnforcements":[{"enforcements":[{"enforcementObjectId":"%value throttleRuleId%","order":null}],"stageKey":"throttle"},{"enforcements":[{"enforcementObjectId":"%value monitorSLAId%","order":null}],"stageKey":"monitorSLA"}],"systemPolicy":false,"active":false,"global":false}}
+createPolicy.monitor.template={"policy":{"id":"%value createPlanResponse/planResponse/quota/enforcementPolicy%","policyEnforcements":[{"enforcements":[{"enforcementObjectId":"%value monitorSLAId%","order":null}],"stageKey":"monitorSLA"}],"systemPolicy":false,"active":false,"global":false}}
+createPolicy.throttle.template={"policy":{"id":"%value createPlanResponse/planResponse/quota/enforcementPolicy%","policyEnforcements":[{"enforcements":[{"enforcementObjectId":"%value throttleRuleId%","order":null}],"stageKey":"throttle"}],"systemPolicy":false,"active":false,"global":false}}
+
+#createPolicy Service
+policy.url=http://localhost:5555/rest/apigateway/policies/
+policy.http.method=post
+policy.http.auth.type=Basic
+policy.http.auth.userName=Administrator
+policy.http.auth.password=[[encrypted:policy.http.auth.password]]
+policy.http.status=Success
+
+#createRatePolicy Service
+createRatePolicy.throttle.template={"policy":{"id":"%value createPlanResponse/planResponse/policies[0]%","policyEnforcements":[{"enforcements":[{"enforcementObjectId":"%value rateId%","order":null}],"stageKey":"throttle"}],"systemPolicy":false,"active":false,"global":false}}
+
+#createPackage Service
+createPackage.url=http://localhost:5555/rest/apigateway/packages/
+createPackage.http.method=post
+createPackage.http.auth.type=Basic
+createPackage.http.auth.userName=Administrator
+createPackage.http.auth.password=[[encrypted:createPackage.http.auth.password]]
+createPackage.http.status=Success
+createPackage.property.deprecated=false
+createPackage.property.active=true
+
+#getAPIDetails Service
+getAPIDetails.url=http://localhost:5555/rest/apigateway/apis/?apiName=
+getAPIDetails.http.method=get
+getAPIDetails.http.auth.type=Basic
+getAPIDetails.http.auth.userName=Administrator
+getAPIDetails.http.auth.password=[[encrypted:getAPIDetails.http.auth.password]]
+getAPIDetails.apiDetails.status1=Success
+getAPIDetails.apiDetails.statusMessage1=API Id found
+getAPIDetails.apiDetails.status2=Failure
+getAPIDetails.apiDetails.statusMessage2=Duplicate API Name Found
+getAPIDetails.apiDetails.status3=Failure
+getAPIDetails.apiDetails.statusMessage3=Error Occured while Getting the API Details
+
+#getApplicationDetails Service
+getApplicationDetails.template={"types":["application"],"condition":"and","scope":[{"attributeName":"name","keyword":"%value appName%"}],"responseFields":["applicationID","name","version","description","accessTokens","owner","isSuspended","authStrategyIds"],"from":0,"size":20,"sortByField":"name","sortOrder":"ASC"}
+getApplicationDetails.url=http://localhost:5555/rest/apigateway/search
+getApplicationDetails.http.method=post
+getApplicationDetails.http.auth.type=Basic
+getApplicationDetails.http.auth.userName=Administrator
+getApplicationDetails.http.auth.password=[[encrypted:getApplicationDetails.http.auth.password]]
+getApplicationDetails.http.status=Success
+getApplicationDetails.stratergies.url=http://localhost:5555/rest/apigateway/strategies/
+getApplicationDetails.stratergies.http.method=get
+getApplicationDetails.stratergies.http.auth.type=Basic
+getApplicationDetails.stratergies.http.auth.userName=Administrator
+getApplicationDetails.stratergies.http.auth.password=[[encrypted:getApplicationDetails.stratergies.http.auth.password]]
+
+#activatePackage Service
+activatePackage.url.keyword=/activate/
+activatePackage.url=http://localhost:5555/rest/apigateway/packages/
+activatePackage.http.method=put
+activatePackage.http.auth.type=Basic
+activatePackage.http.auth.userName=Administrator
+activatePackage.http.auth.password=[[encrypted:activatePackage.http.auth.password]]
+
+#deactivatePackage Service
+deactivatePackage.url.keyword=/deactivate/
+deactivatePackage.url=http://localhost:5555/rest/apigateway/packages/
+deactivatePackage.http.method=put
+deactivatePackage.http.auth.type=Basic
+deactivatePackage.http.auth.userName=Administrator
+deactivatePackage.http.auth.password=[[encrypted:deactivatePackage.http.auth.password]]
+
+
+#publishPackage Service
+publishPackage.url.keyword=/publish/
+publishPackage.url=http://localhost:5555/rest/apigateway/packages/
+publishPackage.http.method=put
+publishPackage.http.auth.type=Basic
+publishPackage.http.auth.userName=Administrator
+publishPackage.http.auth.password=[[encrypted:publishPackage.http.auth.password]]
+
+
+#updateApplication Service
+updateApplication.template={"isSuspended":%value suspend%}
+updateApplicationCertificate.template={"identifiers":[{"value":["%value certificate%"],"name":"%value name%","key":"httpsCertificate"},{"name":"Claimer","key":"jwtClaims","value":["{\\"clientId\\": \\"%value clientId%\\",\\"partnerId\\": \\"%value partnerId%\\",\\"sign\\": \\"%value sign%\\"}"]}]}
+updateApplication.suspend.true.status=Application Suspended
+updateApplication.suspend.false.status=Application Activated
+updateApplication.url=http://localhost:5555/rest/apigateway/applications/
+updateApplication.http.method=patch
+updateApplication.http.auth.type=Basic
+updateApplication.http.auth.userName=Administrator
+updateApplication.http.auth.password=[[encrypted:updateApplication.http.auth.password]]
+
+
+#generateAccessToken Service
+generateAccessToken.url=http://localhost:5555/rest/apigateway/accesstokens/
+generateAccessToken.template={"executor":{"firstname":"Administrator","name":"Administrator","lastname":"Administrator","email":null,"id":"Administrator"},"source":{"id":"fb18dbc0-1d11-11e8-78f0-f01faf3da6f1"},"contextdata":{"consumer_appName":"%value appName%","consumer_appDesc":"%value appDescription%","consumer_app_redirect_uri":"","domain_id":"%value packagePortalRefId%","plan_id":"%value planPortalRefId%","provider_id":"%value packageProviderRefId%","redirect_uris":["https://MCAAS02.eur.ad.sag:18102/abs/apiportalext/v1/oauth2/callback"],"tenant":"default"},"type":"REQUEST_SUBSCRIPTION"}
+generateAccessToken.http.method=post
+generateAccessToken.http.auth.type=Basic
+generateAccessToken.http.auth.userName=Administrator
+generateAccessToken.http.auth.password=[[encrypted:generateAccessToken.http.auth.password]]
+generateAccessToken.http.status=Success
+generateAccessToken.http.statusMessage=Access Token Generated Successfully
+
+
+#updateApplicationClaimsIdentifier Service
+updateApplicationClaimsIdentifier.template={"name":"%value getAppDetails/application[0]/name%","identifiers":[{"name":"JWT default claims set","key":"jwtClaims","value":["{\\"sub_id\\":\\"%value getAppDetails/application[0]/clientId%\\"}"]}]}
+updateApplicationClaimsIdentifier.url=http://localhost:5555/rest/apigateway/applications/
+updateApplicationClaimsIdentifier.http.method=put
+updateApplicationClaimsIdentifier.http.auth.type=Basic
+updateApplicationClaimsIdentifier.http.auth.userName=Administrator
+updateApplicationClaimsIdentifier.http.auth.password=[[encrypted:updateApplicationClaimsIdentifier.http.auth.password]]
+updateApplicationClaimsIdentifier.http.status=Success
+updateApplicationClaimsIdentifier.http.statusMessage=Application Updated Successfully
+
+
+#elasticSearch Service
+elasticSearch.url=http://localhost:9240/gateway_default_deploymentmap/_search
+elasticSearch.http.method=post
+elasticSearch.http.auth.type=Basic
+elasticSearch.http.auth.userName=Administrator
+elasticSearch.http.auth.password=[[encrypted:elasticSearch.http.auth.password]]
+elasticSearch.ES.safeguard.enable=true
+elasticSearch.ES.safeguard.userName=true
+elasticSearch.ES.safeguard.password=true
+
+#createPackagePolicyAction Service
+createPackagePolicyAction.throttle.template={"policyAction":{"names":[{"value":"Throttling Traffic Optimization","locale":"en"}],"descriptions":[{"value":"Throttling Traffic policy action for the package Throttling policy action for the package %value subscriptionRequest/package/packageName%","locale":"English"}],"templateKey":"throttle","parameters":[{"templateKey":"throttleRule","values":[],"parameters":[{"templateKey":"throttleRuleName","values":["requestCount"]},{"templateKey":"monitorRuleOperator","values":["EQ"]},{"templateKey":"value","values":["-1"]}]},{"templateKey":"destination","values":[],"parameters":[{"templateKey":"destinationType","values":["GATEWAY"]}]},{"templateKey":"alertInterval","values":["52"]},{"templateKey":"alertIntervalUnit","values":["weeks"]},{"templateKey":"alertFrequency","values":["once"]},{"templateKey":"alertMessage","values":["ERR"]},{"templateKey":"consumerIds","values":["dummy"]}],"active":false}}
+createPackagePolicyAction.identity.template={"policyAction":{"names":[{"value":"Identify & Authorize Application","locale":"en"}],"descriptions":[{"value":"Default evaluate policy action for the package Evaluate policy action for the package %value subscriptionRequest/package/packageName%","locale":"English"}],"templateKey":"evaluatePolicy","parameters":[{"templateKey":"IdentificationRule","values":["identificationType"],"parameters":[{"templateKey":"identificationType","values":["apiKey"]}]},{"templateKey":"logicalConnector","values":["OR"]}],"active":false}}
+
+#createPackagePolicy Service
+createPackagePolicy.template={"policy":{"names":[{"value":"%value subscriptionRequest/package/packageName%","locale":"English"}],"descriptions":[{"value":"Default policy for the package ","locale":"English"}],"policyEnforcements":[{"enforcements":[{"enforcementObjectId":"%value iamId%","order":null}],"stageKey":"IAM"},{"enforcements":[{"enforcementObjectId":"%value lmtId%","order":null}],"stageKey":"LMT"}],"policyScope":"PACKAGE","systemPolicy":false,"active":false,"global":false}}
